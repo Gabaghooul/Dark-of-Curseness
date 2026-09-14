@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 signal attack
+signal finish_attack
 
 @export var speed = 14
 @export var acceleration = 4.0
@@ -13,6 +14,7 @@ signal attack
 @onready var spring_arm := $CameraPivot/SpringArm3D as SpringArm3D
 
 var target_velocity = Vector3.ZERO
+var state = "READY"
 
 func _physics_process(delta):
 	#velocity.y += -gravity * delta
@@ -24,17 +26,26 @@ func _physics_process(delta):
 	
 
 func get_move_input(delta):
-	var vy = velocity.y
-	velocity.y = 0
-	var input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var dir = Vector3(input.x, 0, input.y).rotated(Vector3.UP, spring_arm.rotation.y)
-	velocity = lerp(velocity, dir * speed, acceleration * delta)
-	velocity.y = vy
+	if state == "READY":
+		var vy = velocity.y
+		velocity.y = 0
+		var input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		var dir = Vector3(input.x, 0, input.y).rotated(Vector3.UP, spring_arm.rotation.y)
+		velocity = lerp(velocity, dir * speed, acceleration * delta)
+		velocity.y = vy
 
 func get_attack_input():
-	if Input.is_action_pressed("attack"):
+	if Input.is_action_just_pressed("attack"):
+		state = "ATTACK"
 		velocity = Vector3.ZERO
+		await get_tree().create_timer(0.2).timeout
 		emit_signal("attack")
+		await get_tree().create_timer(0.35).timeout
+		emit_signal("finish_attack")
+		reset_state()
+
+func reset_state():
+	state = "READY"
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:

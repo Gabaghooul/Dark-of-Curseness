@@ -34,3 +34,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.4143343, 0.6326531, 0, -0.49244657)
 
 [connection signal="attack" from="." to="WeaponSlot/Weapon" method="attack"]
+[connection signal="finish_attack" from="." to="WeaponSlot/Weapon" method="finish_attack"]
