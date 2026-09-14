@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://g0a4hkj3aifi"]
+
+[ext_resource type="Script" uid="uid://dc781dt22jn8l" path="res://weapon.gd" id="1_swcir"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_div1a"]
+size = Vector3(0.01, 1, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_div1a"]
+albedo_color = Color(0.55986506, 0.5706044, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2iv3x"]
+size = Vector3(0.01, 1, 0.05)
+
+[node name="Weapon" type="Node3D" unique_id=72729195]
+script = ExtResource("1_swcir")
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=568895752]
+mesh = SubResource("BoxMesh_div1a")
+surface_material_override/0 = SubResource("StandardMaterial3D_div1a")
+
+[node name="Hitbox" type="Area3D" parent="." unique_id=1175507382]
+collision_layer = 8
+collision_mask = 64
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox" unique_id=1972219281]
+shape = SubResource("BoxShape3D_2iv3x")

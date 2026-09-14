@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cvdeapaogakaa"]
+
+[ext_resource type="Script" uid="uid://bhjhfkoki1dt8" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="PackedScene" uid="uid://g0a4hkj3aifi" path="res://weapon.tscn" id="2_onrkg"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_onrkg"]
+albedo_color = Color(0.98785347, 0, 0.114313714, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
+material = SubResource("StandardMaterial3D_onrkg")
+
+[node name="Player" type="CharacterBody3D" unique_id=1596719240]
+script = ExtResource("1_4flbx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1964148594]
+shape = SubResource("CapsuleShape3D_sh265")
+
+[node name="Pivot" type="MeshInstance3D" parent="." unique_id=1417364264]
+mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1632955056]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=14472933]
+spring_length = 3.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1340602570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="WeaponSlot" type="Node3D" parent="." unique_id=316193368]
+
+[node name="Weapon" parent="WeaponSlot" unique_id=72729195 instance=ExtResource("2_onrkg")]
+transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.4143343, 0.6326531, 0, -0.49244657)
+
+[connection signal="attack" from="." to="WeaponSlot/Weapon" method="attack"]
