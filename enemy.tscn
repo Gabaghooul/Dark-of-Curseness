@@ -28,5 +28,3 @@ collision_mask = 8
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=1522519736]
 shape = SubResource("CapsuleShape3D_lhlqy")
 debug_color = Color(0.9408043, 1.0396242e-05, 0.6155819, 0.41960785)
-
-[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

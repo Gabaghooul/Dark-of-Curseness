@@ -1,8 +1,5 @@
 extends CharacterBody3D
 
-signal attack
-signal finish_attack
-
 @export var speed = 14
 @export var acceleration = 4.0
 @export var fall_acceleration = 75
@@ -38,10 +35,7 @@ func get_attack_input():
 	if Input.is_action_just_pressed("attack"):
 		state = "ATTACK"
 		velocity = Vector3.ZERO
-		await get_tree().create_timer(0.2).timeout
-		emit_signal("attack")
-		await get_tree().create_timer(0.35).timeout
-		emit_signal("finish_attack")
+		$WeaponSlot/Weapon.attack()	
 		reset_state()
 
 func reset_state():

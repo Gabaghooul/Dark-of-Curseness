@@ -1,13 +1,11 @@
 extends CharacterBody3D
 
-@onready var hp = 100
+@export var hp = 100
 
-func _on_hurtbox_area_entered(area: Area3D):
-	take_damage()
-
-func take_damage():
+func take_damage(damage):
 	if hp > 0:
-		hp -= 10
+		hp -= damage
 		print("Enemy hit: ", hp, "/", 100)
 	if hp <= 0:
+		queue_free()
 		print("Enemy dead")
