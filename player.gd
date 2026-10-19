@@ -1,5 +1,6 @@
 extends CharacterBody3D
 
+@export var hp = 100
 @export var speed = 14
 @export var acceleration = 4.0
 @export var fall_acceleration = 75
@@ -7,7 +8,7 @@ extends CharacterBody3D
 @export_range(0.0, 1.0) var mouse_sensitivity = 0.01
 @export var tilt_limit = deg_to_rad(75)
 
-@onready var model := $CollisionShape3D as CollisionShape3D
+@onready var model := $Collision as CollisionShape3D
 @onready var spring_arm := $CameraPivot/SpringArm3D as SpringArm3D
 
 var target_velocity = Vector3.ZERO
@@ -35,7 +36,7 @@ func get_attack_input():
 	if Input.is_action_just_pressed("attack"):
 		state = "ATTACK"
 		velocity = Vector3.ZERO
-		$WeaponSlot/Weapon.attack()	
+		$WeaponSlot/Weapon.attack()
 		reset_state()
 
 func reset_state():
@@ -46,3 +47,11 @@ func _unhandled_input(event):
 		spring_arm.rotation.x -= event.relative.y * mouse_sensitivity
 		spring_arm.rotation_degrees.x = clamp(spring_arm.rotation_degrees.x, -90.0, 30.0)
 		spring_arm.rotation.y -= event.relative.x * mouse_sensitivity
+		
+func take_damage(damage):
+	if hp > 0:
+		hp -= damage
+		print("Player hit: ", hp, "/", 100)
+	if hp <= 0:
+		queue_free()
+		print("Player dead")

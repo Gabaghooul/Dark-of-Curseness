@@ -5,6 +5,8 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2iv3x"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_onrkg"]
 albedo_color = Color(0.98785347, 0, 0.114313714, 1)
 
@@ -14,8 +16,15 @@ material = SubResource("StandardMaterial3D_onrkg")
 [node name="Player" type="CharacterBody3D" unique_id=1596719240]
 script = ExtResource("1_4flbx")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1964148594]
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=1964148594]
 shape = SubResource("CapsuleShape3D_sh265")
+
+[node name="Hurtbox" type="Area3D" parent="." unique_id=195208850]
+collision_layer = 64
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=2053765549]
+shape = SubResource("CapsuleShape3D_2iv3x")
 
 [node name="Pivot" type="MeshInstance3D" parent="." unique_id=1417364264]
 mesh = SubResource("CapsuleMesh_4flbx")

@@ -11,6 +11,37 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lhlqy"]
 albedo_color = Color(0.09019608, 0.1764706, 1, 1)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_2iv3x"]
+radius = 0.20844007
+
+[sub_resource type="Animation" id="Animation_qi2p4"]
+resource_name = "Attack"
+length = 0.7
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualPivot")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.2, 1, -0.10675911, 0, 0, 0.9942849, 0.4, 1, 0.30323485, 0, 0, 0.95291585, 0.62092733, 1, 0, 0, 0, 1)
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.4, 0.45),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"enable_hitbox"
+}, {
+"args": [],
+"method": &"disable_hitbox"
+}]
+}
+
 [sub_resource type="Animation" id="Animation_7k104"]
 resource_name = "Hurt"
 length = 0.2667
@@ -34,6 +65,7 @@ tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4gyqm"]
 _data = {
+&"Attack": SubResource("Animation_qi2p4"),
 &"Hurt": SubResource("Animation_7k104"),
 &"RESET": SubResource("Animation_4gyqm")
 }
@@ -58,5 +90,22 @@ debug_color = Color(0.9408043, 1.0396242e-05, 0.6155819, 0.41960785)
 mesh = SubResource("CapsuleMesh_2iv3x")
 surface_material_override/0 = SubResource("StandardMaterial3D_lhlqy")
 
+[node name="Hitbox" type="Area3D" parent="VisualPivot" unique_id=1815914194]
+collision_layer = 8
+collision_mask = 64
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisualPivot/Hitbox" unique_id=56925285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54430795, 0.73633444)
+shape = SubResource("SphereShape3D_2iv3x")
+debug_color = Color(0.62458503, 0, 0.03876, 0.92200005)
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1172209111]
 libraries/ = SubResource("AnimationLibrary_4gyqm")
+
+[node name="Timer" type="Timer" parent="." unique_id=103930429]
+wait_time = 2.0
+autostart = true
+
+[connection signal="area_entered" from="VisualPivot/Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timeout"]
