@@ -2,6 +2,7 @@ extends Node
 
 var max_hp = 0
 var hp = 0
+signal hurt
 signal death
 
 func init(parent_hp):
@@ -10,6 +11,7 @@ func init(parent_hp):
 
 func take_damage(damage):
 	if hp > 0:
+		emit_signal("hurt")
 		hp -= damage
 		print("Entity hit: ", hp, "/", max_hp)
 		if hp <= 0:

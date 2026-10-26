@@ -44,7 +44,7 @@ func get_attack_input():
 		elif state == "RECOVERY":
 			state = "ATTACK"
 			velocity = Vector3.ZERO
-			$WeaponSlot/Weapon.attack2()
+			$WeaponSlot/Weapon.attack()
 		elif state == "ATTACK":
 			combo_buffered = true
 
@@ -53,17 +53,22 @@ func enter_recovery():
 	if combo_buffered:
 		state = "ATTACK"
 		velocity = Vector3.ZERO
-		$WeaponSlot/Weapon.attack2()
+		$WeaponSlot/Weapon.attack()
 		combo_buffered = false
 
 func reset_state():
 	state = "READY"
+	combo_buffered = false
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		spring_arm.rotation.x -= event.relative.y * mouse_sensitivity
 		spring_arm.rotation_degrees.x = clamp(spring_arm.rotation_degrees.x, -90.0, 30.0)
 		spring_arm.rotation.y -= event.relative.x * mouse_sensitivity
+
+func hurt():
+	state = "HURT"
+	$AnimationPlayer.play("Hurt")
 
 func death():
 	#game over

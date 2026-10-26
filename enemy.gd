@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-@export var max_hp = 50
+@export var max_hp = 250
 @export var damage = 10
 var connected_hits = []
 
@@ -27,7 +27,11 @@ func _on_hitbox_area_entered(area: Area3D) -> void:
 	if target.has_node("Health") && !connected_hits.has(target):
 		target.get_node("Health").take_damage(damage)
 		connected_hits.append(target)
-		
+
+func hurt():
+	timer.start()
+	$AnimationPlayer.play("Hurt")
+
 func death():
 	#give xp/roll for drops/etc
 	queue_free()

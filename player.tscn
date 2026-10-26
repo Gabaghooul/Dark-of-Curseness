@@ -14,6 +14,47 @@ albedo_color = Color(0.98785347, 0, 0.114313714, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 material = SubResource("StandardMaterial3D_onrkg")
 
+[sub_resource type="Animation" id="Animation_i3pqv"]
+resource_name = "Hurt"
+length = 0.2667
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.13333333, 1, 0.11462298, 0, 0, 0.9934091, 0.2667, 1, 0, 0, 0, 1)
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.2667),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"reset_state"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_hqtel"]
+length = 0.001
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sweqy"]
+_data = {
+&"Hurt": SubResource("Animation_i3pqv"),
+&"RESET": SubResource("Animation_hqtel")
+}
+
 [node name="Player" type="CharacterBody3D" unique_id=1596719240]
 script = ExtResource("1_4flbx")
 
@@ -28,6 +69,7 @@ collision_mask = 8
 shape = SubResource("CapsuleShape3D_2iv3x")
 
 [node name="Pivot" type="MeshInstance3D" parent="." unique_id=1417364264]
+transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_4flbx")
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=1632955056]
@@ -45,6 +87,10 @@ transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.41433
 
 [node name="Health" parent="." unique_id=111858265 instance=ExtResource("3_i3pqv")]
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=358421734]
+libraries/ = SubResource("AnimationLibrary_sweqy")
+
 [connection signal="animation_finished" from="WeaponSlot/Weapon" to="." method="reset_state"]
 [connection signal="combo_ready" from="WeaponSlot/Weapon" to="." method="enter_recovery"]
 [connection signal="death" from="Health" to="." method="death"]
+[connection signal="hurt" from="Health" to="." method="hurt"]

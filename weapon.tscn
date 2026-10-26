@@ -61,7 +61,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_8xwfw"]
 resource_name = "swing2"
-length = 0.39999999999999997
+length = 0.4
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -69,6 +69,44 @@ tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, -0.45093098, 0.891988, -0.01439932, 0.028483342, 0.4, 1, -0.12915233, 0.25547665, -0.43227974, 0.8550939)
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [],
+"method": &"enable_hitbox"
+}, {
+"args": [],
+"method": &"combo_window"
+}, {
+"args": [],
+"method": &"finish_attack"
+}]
+}
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, -0.7773973, 0, -0.09013383, 0.4, 1, 0.23567057, 0.12961727, 0)
+
+[sub_resource type="Animation" id="Animation_3fy1u"]
+resource_name = "swing3"
+length = 0.4
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -0.12915233, 0.25547665, -0.43227974, 0.8550939, 0.4, 1, -0.3902451, 0.7719452, 0.22639517, -0.44783312)
 tracks/1/type = "method"
 tracks/1/imported = false
 tracks/1/enabled = true
@@ -92,20 +130,21 @@ tracks/2/enabled = true
 tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/keys = PackedFloat32Array(0, 1, -0.7773973, 0, -0.09013383, 0.4, 1, 0.23567057, 0.12961727, 0)
+tracks/2/keys = PackedFloat32Array(0, 1, 0.23567057, 0.12961727, 0, 0.4, 1, -0.41163468, 0.12961727, 0)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8xwfw"]
 _data = {
 &"RESET": SubResource("Animation_swcir"),
 &"swing": SubResource("Animation_o2wld"),
-&"swing2": SubResource("Animation_8xwfw")
+&"swing2": SubResource("Animation_8xwfw"),
+&"swing3": SubResource("Animation_3fy1u")
 }
 
 [node name="Weapon" type="Node3D" unique_id=72729195]
 script = ExtResource("1_swcir")
 
 [node name="VisualPivot" type="Node3D" parent="." unique_id=1922229995]
-transform = Transform3D(0.9999999, 0, 0, 0, 0.9999997, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9999997, 0, 0, 0, 1, 0.21948794, 0.12961727, 0)
 
 [node name="Hitbox" type="Area3D" parent="VisualPivot" unique_id=1175507382]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999999, 0, 0, 0)
