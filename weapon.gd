@@ -28,6 +28,12 @@ func finish_attack():
 	combo_stage = 0
 	$VisualPivot/Hitbox.set_deferred("monitoring", false)
 	emit_signal("animation_finished")
+	$AnimationPlayer.play("RESET")
+	
+func interrupted():
+	combo_stage = 0
+	$VisualPivot/Hitbox.set_deferred("monitoring", false)
+	$AnimationPlayer.play("RESET")
 
 func _on_hitbox_area_entered(area: Area3D) -> void:
 	var enemy = area.get_parent().get_parent()

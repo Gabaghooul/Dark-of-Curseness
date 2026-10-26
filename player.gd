@@ -69,6 +69,7 @@ func _unhandled_input(event):
 func hurt():
 	state = "HURT"
 	$AnimationPlayer.play("Hurt")
+	$WeaponSlot/Weapon.interrupted()
 
 func death():
 	#game over

@@ -61,7 +61,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_8xwfw"]
 resource_name = "swing2"
-length = 0.4
+length = 0.5
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -99,7 +99,7 @@ tracks/2/keys = PackedFloat32Array(0, 1, -0.7773973, 0, -0.09013383, 0.4, 1, 0.2
 
 [sub_resource type="Animation" id="Animation_3fy1u"]
 resource_name = "swing3"
-length = 0.4
+length = 0.5
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -144,7 +144,7 @@ _data = {
 script = ExtResource("1_swcir")
 
 [node name="VisualPivot" type="Node3D" parent="." unique_id=1922229995]
-transform = Transform3D(0.9999999, 0, 0, 0, 0.9999997, 0, 0, 0, 1, 0.21948794, 0.12961727, 0)
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9999997, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Hitbox" type="Area3D" parent="VisualPivot" unique_id=1175507382]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999999, 0, 0, 0)
