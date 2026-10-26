@@ -2,6 +2,7 @@ extends Node3D
 
 @export var damage = 10
 var connected_hits = []
+signal animation_finished
 
 func attack():
 	connected_hits = []	
@@ -12,9 +13,10 @@ func enable_hitbox():
 	
 func finish_attack():
 	$VisualPivot/Hitbox.set_deferred("monitoring", false)
+	emit_signal("animation_finished")
 
 func _on_hitbox_area_entered(area: Area3D) -> void:
 	var enemy = area.get_parent().get_parent()
-	if enemy.has_method("take_damage") && !connected_hits.has(enemy):
-		enemy.take_damage(damage)
+	if enemy.has_node("Health") && !connected_hits.has(enemy):
+		enemy.get_node("Health").take_damage(damage)
 		connected_hits.append(enemy)

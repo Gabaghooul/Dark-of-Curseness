@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bhjhfkoki1dt8" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="PackedScene" uid="uid://g0a4hkj3aifi" path="res://weapon.tscn" id="2_onrkg"]
+[ext_resource type="PackedScene" uid="uid://pjp7bmqqdnfi" path="res://health.tscn" id="3_i3pqv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
 
@@ -41,3 +42,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="Weapon" parent="WeaponSlot" unique_id=72729195 instance=ExtResource("2_onrkg")]
 transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.4143343, 0.6326531, 0, -0.49244657)
+
+[node name="Health" parent="." unique_id=111858265 instance=ExtResource("3_i3pqv")]
+
+[connection signal="animation_finished" from="WeaponSlot/Weapon" to="." method="reset_state"]
+[connection signal="death" from="Health" to="." method="death"]

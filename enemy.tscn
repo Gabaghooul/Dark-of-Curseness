@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://226gwq8qm4ev"]
 
 [ext_resource type="Script" uid="uid://ddxkkrg1u7cfa" path="res://enemy.gd" id="1_7k104"]
+[ext_resource type="PackedScene" uid="uid://pjp7bmqqdnfi" path="res://health.tscn" id="2_4gyqm"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2iv3x"]
 
@@ -107,5 +108,8 @@ libraries/ = SubResource("AnimationLibrary_4gyqm")
 wait_time = 2.0
 autostart = true
 
+[node name="Health" parent="." unique_id=111858265 instance=ExtResource("2_4gyqm")]
+
 [connection signal="area_entered" from="VisualPivot/Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timeout"]
+[connection signal="death" from="Health" to="." method="death"]

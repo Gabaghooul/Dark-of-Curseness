@@ -14,6 +14,9 @@ extends CharacterBody3D
 var target_velocity = Vector3.ZERO
 var state = "READY"
 
+func _ready():
+	$Health.init(hp)
+
 func _physics_process(delta):
 	#velocity.y += -gravity * delta
 	get_move_input(delta)
@@ -21,7 +24,6 @@ func _physics_process(delta):
 	if velocity.length() > 1.0:
 		model.rotation.y = lerp_angle(model.rotation.y, spring_arm.rotation.y, rotation_speed * delta)
 	get_attack_input()
-	
 
 func get_move_input(delta):
 	if state == "READY":
@@ -37,7 +39,6 @@ func get_attack_input():
 		state = "ATTACK"
 		velocity = Vector3.ZERO
 		$WeaponSlot/Weapon.attack()
-		reset_state()
 
 func reset_state():
 	state = "READY"
@@ -47,11 +48,7 @@ func _unhandled_input(event):
 		spring_arm.rotation.x -= event.relative.y * mouse_sensitivity
 		spring_arm.rotation_degrees.x = clamp(spring_arm.rotation_degrees.x, -90.0, 30.0)
 		spring_arm.rotation.y -= event.relative.x * mouse_sensitivity
-		
-func take_damage(damage):
-	if hp > 0:
-		hp -= damage
-		print("Player hit: ", hp, "/", 100)
-	if hp <= 0:
-		queue_free()
-		print("Player dead")
+
+func death():
+	#game over
+	queue_free()
