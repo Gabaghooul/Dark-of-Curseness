@@ -13,6 +13,7 @@ extends CharacterBody3D
 
 var target_velocity = Vector3.ZERO
 var state = "READY"
+var combo_buffered = false
 
 func _ready():
 	$Health.init(max_hp)
@@ -44,10 +45,16 @@ func get_attack_input():
 			state = "ATTACK"
 			velocity = Vector3.ZERO
 			$WeaponSlot/Weapon.attack2()
-	
+		elif state == "ATTACK":
+			combo_buffered = true
 
 func enter_recovery():
 	state = "RECOVERY"
+	if combo_buffered:
+		state = "ATTACK"
+		velocity = Vector3.ZERO
+		$WeaponSlot/Weapon.attack2()
+		combo_buffered = false
 
 func reset_state():
 	state = "READY"
