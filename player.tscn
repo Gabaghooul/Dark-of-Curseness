@@ -46,4 +46,5 @@ transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.41433
 [node name="Health" parent="." unique_id=111858265 instance=ExtResource("3_i3pqv")]
 
 [connection signal="animation_finished" from="WeaponSlot/Weapon" to="." method="reset_state"]
+[connection signal="combo_ready" from="WeaponSlot/Weapon" to="." method="enter_recovery"]
 [connection signal="death" from="Health" to="." method="death"]

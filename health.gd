@@ -12,6 +12,6 @@ func take_damage(damage):
 	if hp > 0:
 		hp -= damage
 		print("Entity hit: ", hp, "/", max_hp)
-	if hp <= 0:
-		print("Entity dead")
-		emit_signal("death")
+		if hp <= 0:
+			print("Entity dead")
+			emit_signal("death")

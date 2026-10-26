@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-@export var hp = 100
+@export var max_hp = 100
 @export var speed = 14
 @export var acceleration = 4.0
 @export var fall_acceleration = 75
@@ -15,7 +15,7 @@ var target_velocity = Vector3.ZERO
 var state = "READY"
 
 func _ready():
-	$Health.init(hp)
+	$Health.init(max_hp)
 
 func _physics_process(delta):
 	#velocity.y += -gravity * delta
@@ -36,9 +36,18 @@ func get_move_input(delta):
 
 func get_attack_input():
 	if Input.is_action_just_pressed("attack"):
-		state = "ATTACK"
-		velocity = Vector3.ZERO
-		$WeaponSlot/Weapon.attack()
+		if state == "READY":
+			state = "ATTACK"
+			velocity = Vector3.ZERO
+			$WeaponSlot/Weapon.attack()
+		elif state == "RECOVERY":
+			state = "ATTACK"
+			velocity = Vector3.ZERO
+			$WeaponSlot/Weapon.attack2()
+	
+
+func enter_recovery():
+	state = "RECOVERY"
 
 func reset_state():
 	state = "READY"
