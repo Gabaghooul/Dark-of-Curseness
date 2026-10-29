@@ -5,6 +5,7 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 @export var max_hp = 250
 @export var damage = 10
 var connected_hits = []
+var state = "READY"
 
 @onready var timer: Timer = $Timer
 

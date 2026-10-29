@@ -9,3 +9,10 @@ func show_damage(amount: int):
 	tween.tween_property(self, "position:y", position.y + rise_height, lifetime)
 	tween.tween_property(self, "modulate:a", 0.0, lifetime)
 	tween.chain().tween_callback(queue_free)
+
+func show_block():
+	text = str("GUARD")
+	var tween = create_tween().set_parallel(true)
+	tween.tween_property(self, "position:y", position.y + rise_height, lifetime)
+	tween.tween_property(self, "modulate:a", 0.0, lifetime)
+	tween.chain().tween_callback(queue_free)

@@ -14,6 +14,30 @@ albedo_color = Color(0.98785347, 0, 0.114313714, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 material = SubResource("StandardMaterial3D_onrkg")
 
+[sub_resource type="Animation" id="Animation_sweqy"]
+resource_name = "Dodge"
+length = 0.5
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [0.017],
+"method": &"dodge"
+}, {
+"args": [],
+"method": &"enter_dodge_recovery"
+}, {
+"args": [],
+"method": &"reset_state"
+}]
+}
+
 [sub_resource type="Animation" id="Animation_i3pqv"]
 resource_name = "Hurt"
 length = 0.2667
@@ -51,6 +75,7 @@ tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_sweqy"]
 _data = {
+&"Dodge": SubResource("Animation_sweqy"),
 &"Hurt": SubResource("Animation_i3pqv"),
 &"RESET": SubResource("Animation_hqtel")
 }
@@ -94,6 +119,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 libraries/ = SubResource("AnimationLibrary_sweqy")
 
 [connection signal="animation_finished" from="VisualPivot/Pivot/WeaponSlot/Weapon" to="." method="reset_state"]
-[connection signal="combo_ready" from="VisualPivot/Pivot/WeaponSlot/Weapon" to="." method="enter_recovery"]
+[connection signal="combo_ready" from="VisualPivot/Pivot/WeaponSlot/Weapon" to="." method="enter_attack_recovery"]
+[connection signal="block" from="Health" to="." method="block"]
 [connection signal="death" from="Health" to="." method="death"]
 [connection signal="hurt" from="Health" to="." method="hurt"]
