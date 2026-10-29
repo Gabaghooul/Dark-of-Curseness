@@ -20,7 +20,7 @@ length = 0.2667
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Pivot")
+tracks/0/path = NodePath("VisualPivot/Pivot")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.13333333, 1, 0.11462298, 0, 0, 0.9934091, 0.2667, 1, 0, 0, 0, 1)
@@ -44,7 +44,7 @@ length = 0.001
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Pivot")
+tracks/0/path = NodePath("VisualPivot/Pivot")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
@@ -68,9 +68,17 @@ collision_mask = 8
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=2053765549]
 shape = SubResource("CapsuleShape3D_2iv3x")
 
-[node name="Pivot" type="MeshInstance3D" parent="." unique_id=1417364264]
+[node name="VisualPivot" type="Node3D" parent="." unique_id=2119384862]
+
+[node name="Pivot" type="MeshInstance3D" parent="VisualPivot" unique_id=1417364264]
 transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="WeaponSlot" type="Node3D" parent="VisualPivot/Pivot" unique_id=316193368]
+transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 0, 0)
+
+[node name="Weapon" parent="VisualPivot/Pivot/WeaponSlot" unique_id=72729195 instance=ExtResource("2_onrkg")]
+transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.4143343, 0.6326531, 0, -0.49244657)
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=1632955056]
 
@@ -80,17 +88,12 @@ spring_length = 3.0
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1340602570]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
-[node name="WeaponSlot" type="Node3D" parent="." unique_id=316193368]
-
-[node name="Weapon" parent="WeaponSlot" unique_id=72729195 instance=ExtResource("2_onrkg")]
-transform = Transform3D(1, 0, 0, 0, 0.4143343, 0.9101248, 0, -0.9101248, 0.4143343, 0.6326531, 0, -0.49244657)
-
 [node name="Health" parent="." unique_id=111858265 instance=ExtResource("3_i3pqv")]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=358421734]
 libraries/ = SubResource("AnimationLibrary_sweqy")
 
-[connection signal="animation_finished" from="WeaponSlot/Weapon" to="." method="reset_state"]
-[connection signal="combo_ready" from="WeaponSlot/Weapon" to="." method="enter_recovery"]
+[connection signal="animation_finished" from="VisualPivot/Pivot/WeaponSlot/Weapon" to="." method="reset_state"]
+[connection signal="combo_ready" from="VisualPivot/Pivot/WeaponSlot/Weapon" to="." method="enter_recovery"]
 [connection signal="death" from="Health" to="." method="death"]
 [connection signal="hurt" from="Health" to="." method="hurt"]

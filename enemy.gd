@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
+
 @export var max_hp = 250
 @export var damage = 10
 var connected_hits = []
@@ -8,6 +10,7 @@ var connected_hits = []
 
 func _ready():
 	$Health.init(max_hp)
+	$Health.damage_taken.connect(_on_damage_taken)
 
 func _on_timeout() -> void:
 	attack()
@@ -31,6 +34,12 @@ func _on_hitbox_area_entered(area: Area3D) -> void:
 func hurt():
 	timer.start()
 	$AnimationPlayer.play("Hurt")
+	
+func _on_damage_taken(amount: int):
+	var number = DAMAGE_NUMBER.instantiate()
+	get_tree().current_scene.add_child(number)
+	number.global_position = global_position + Vector3(0, 1, 0)
+	number.show_damage(amount)
 
 func death():
 	#give xp/roll for drops/etc

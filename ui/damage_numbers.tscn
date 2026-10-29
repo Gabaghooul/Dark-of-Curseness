@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://be8uk11bnge2h"]
+
+[ext_resource type="Script" uid="uid://ck1c0h7ybgjju" path="res://ui/damage_numbers.gd" id="1_vuyu0"]
+
+[node name="DamageNumbers" type="Label3D" unique_id=1341452969]
+billboard = 1
+text = "10"
+script = ExtResource("1_vuyu0")

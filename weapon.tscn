@@ -1,15 +1,24 @@
 [gd_scene format=3 uid="uid://g0a4hkj3aifi"]
 
 [ext_resource type="Script" uid="uid://dc781dt22jn8l" path="res://weapon.gd" id="1_swcir"]
+[ext_resource type="ArrayMesh" uid="uid://tadldxjslr13" path="res://Caladbolg.glb" id="2_o2wld"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_2iv3x"]
-size = Vector3(0.01, 1.5, 0.05)
-
-[sub_resource type="BoxMesh" id="BoxMesh_div1a"]
-size = Vector3(0.01, 1.5, 0.05)
+[sub_resource type="BoxShape3D" id="BoxShape3D_o2wld"]
+size = Vector3(0.0715332, 0.776062, 0.19508362)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_div1a"]
-albedo_color = Color(0.55986506, 0.5706044, 1, 1)
+albedo_color = Color(0.11976742, 0, 0.0038734186, 1)
+metallic = 0.2
+metallic_specular = 0.65
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o2wld"]
+albedo_color = Color(0.8692878, 0.6262097, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8xwfw"]
+albedo_color = Color(0.87058824, 0.627451, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3fy1u"]
+albedo_color = Color(0.87058824, 0.627451, 0, 1)
 
 [sub_resource type="Animation" id="Animation_swcir"]
 length = 0.001
@@ -99,14 +108,14 @@ tracks/2/keys = PackedFloat32Array(0, 1, -0.7773973, 0, -0.09013383, 0.4, 1, 0.2
 
 [sub_resource type="Animation" id="Animation_3fy1u"]
 resource_name = "swing3"
-length = 0.5
+length = 0.7
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, -0.12915233, 0.25547665, -0.43227974, 0.8550939, 0.4, 1, -0.3902451, 0.7719452, 0.22639517, -0.44783312)
+tracks/0/keys = PackedFloat32Array(0, 1, -0.12915233, 0.25547665, -0.43227974, 0.8550939, 0.13333334, 1, -0.011602398, 0.28603148, -0.7479107, 0.59889966, 0.36666667, 1, 0.04495375, 0.914349, -0.39514908, -0.076171264, 0.56666666, 1, -0.0078019216, 0.9734525, 0.2111092, -0.088102385)
 tracks/1/type = "method"
 tracks/1/imported = false
 tracks/1/enabled = true
@@ -114,7 +123,7 @@ tracks/1/path = NodePath("..")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0.06666667, 0.6),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -130,7 +139,7 @@ tracks/2/enabled = true
 tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/keys = PackedFloat32Array(0, 1, 0.23567057, 0.12961727, 0, 0.4, 1, -0.41163468, 0.12961727, 0)
+tracks/2/keys = PackedFloat32Array(0, 1, 0.23567057, 0.12961727, 0, 0.13333334, 1, 0.23567057, 0.12961727, -0.10157198, 0.36666667, 1, 0.23567057, 0.49521494, -0.2396084, 0.56666666, 1, 0.23567057, 0.5985915, -0.30257055)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8xwfw"]
 _data = {
@@ -144,22 +153,26 @@ _data = {
 script = ExtResource("1_swcir")
 
 [node name="VisualPivot" type="Node3D" parent="." unique_id=1922229995]
-transform = Transform3D(0.9999999, 0, 0, 0, 0.9999997, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999964, 0, 0, 0, 0.9999998, 0.23567057, 0.12961727, 0)
 
 [node name="Hitbox" type="Area3D" parent="VisualPivot" unique_id=1175507382]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999999, 0, 0, 0)
+transform = Transform3D(0.99999994, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 0.28634754, 0)
 collision_layer = 8
 collision_mask = 64
 monitoring = false
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="VisualPivot/Hitbox" unique_id=1972219281]
-shape = SubResource("BoxShape3D_2iv3x")
+transform = Transform3D(0.99999803, 0, 0, 0, 0.99999803, 0, 0, 0, 1, 0.006959609, -0.099698216, 0.0011978146)
+shape = SubResource("BoxShape3D_o2wld")
 
 [node name="Model" type="MeshInstance3D" parent="VisualPivot" unique_id=568895752]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999999, 0, 0, 0)
-mesh = SubResource("BoxMesh_div1a")
+transform = Transform3D(0.15, 0, 0, 0, -6.556709e-09, 0.15000002, 0, -0.15, -6.5567085e-09, 0, 0.25, 0)
+mesh = ExtResource("2_o2wld")
 surface_material_override/0 = SubResource("StandardMaterial3D_div1a")
+surface_material_override/1 = SubResource("StandardMaterial3D_o2wld")
+surface_material_override/2 = SubResource("StandardMaterial3D_8xwfw")
+surface_material_override/3 = SubResource("StandardMaterial3D_3fy1u")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2028772894]
 root_node = NodePath("../VisualPivot")
