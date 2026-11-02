@@ -18,20 +18,13 @@ radius = 0.20844007
 [sub_resource type="Animation" id="Animation_qi2p4"]
 resource_name = "Attack"
 length = 0.7
-tracks/0/type = "rotation_3d"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("VisualPivot")
+tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.2, 1, -0.10675911, 0, 0, 0.9942849, 0.4, 1, 0.30323485, 0, 0, 0.95291585, 0.62092733, 1, 0, 0, 0, 1)
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
+tracks/0/keys = {
 "times": PackedFloat32Array(0.4, 0.45),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{

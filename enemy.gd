@@ -4,21 +4,61 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 
 @export var max_hp = 250
 @export var damage = 10
-var connected_hits = []
-var state = "READY"
+@export var speed = 4
+@export var attack_range = 1.3
 
+var connected_hits = []
+var state = "CHASE"
+
+@onready var model := $VisualPivot as Node3D
 @onready var timer: Timer = $Timer
+var player = null
 
 func _ready():
+	player = get_tree().current_scene.get_node("Player")
 	$Health.init(max_hp)
 	$Health.damage_taken.connect(_on_damage_taken)
+	
+func _physics_process(delta):
+	if not player:
+		return
+	
+	var distance_to_player = global_position.distance_to(player.global_position)
+	decide_action(distance_to_player)
+	execute_action()
+	move_and_slide()
+
+func decide_action(distance_to_player):
+	match state:
+		"CHASE":
+			if distance_to_player <= attack_range:
+				state = "ATTACK"
+		"ATTACK":
+			pass
+		"COOLDOWN":
+			pass
+
+func execute_action():
+	match state:
+		"CHASE":
+			var direction = (player.global_position - global_position).normalized()
+			model.rotation.y = direction.y
+			velocity = direction * speed
+		"ATTACK":
+			var direction = (player.global_position - global_position).normalized()
+			model.rotation.y = direction.y
+			velocity = Vector3.ZERO
+			attack()
+		"COOLDOWN":
+			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1)
 
 func _on_timeout() -> void:
-	attack()
+	state = "CHASE"
 
 func attack():
 	connected_hits = []
 	$AnimationPlayer.play("Attack")
+	state = "COOLDOWN"
 	
 func enable_hitbox():
 	$VisualPivot/Hitbox.set_deferred("monitoring", true)
