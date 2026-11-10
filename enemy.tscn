@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ddxkkrg1u7cfa" path="res://enemy.gd" id="1_7k104"]
 [ext_resource type="PackedScene" uid="uid://pjp7bmqqdnfi" path="res://health.tscn" id="2_4gyqm"]
+[ext_resource type="Texture2D" uid="uid://bjppm5c8kt6mv" path="res://icon.svg" id="2_qi2p4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2iv3x"]
 
@@ -10,7 +11,7 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_2iv3x"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lhlqy"]
-albedo_color = Color(0.09019608, 0.1764706, 1, 1)
+albedo_texture = ExtResource("2_qi2p4")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_2iv3x"]
 radius = 0.20844007
@@ -19,10 +20,10 @@ radius = 0.20844007
 animation = &"Attack"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iifgy"]
-animation = &"RESET"
+animation = &"Idle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qi2p4"]
-animation = &"RESET"
+animation = &"Walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_epg4t"]
 
@@ -33,7 +34,6 @@ animation = &"RESET"
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wujgv"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hb8ge"]
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4gyqm"]
 
@@ -42,12 +42,12 @@ states/Attack/node = SubResource("AnimationNodeAnimation_4gyqm")
 states/Attack/position = Vector2(550, 100)
 states/End/position = Vector2(659, 100)
 states/Idle/node = SubResource("AnimationNodeAnimation_iifgy")
-states/Idle/position = Vector2(280.06018, 100)
+states/Idle/position = Vector2(281.06018, 100)
 states/Start/position = Vector2(180, 100)
 states/Walk/node = SubResource("AnimationNodeAnimation_qi2p4")
-states/Walk/position = Vector2(407.06018, 36)
+states/Walk/position = Vector2(407.06018, 35)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_epg4t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_iifgy"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_3yqyl"), "Walk", "Attack", SubResource("AnimationNodeStateMachineTransition_wujgv"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_hb8ge"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_4gyqm")]
-graph_offset = Vector2(-143.93982, -39.22594)
+graph_offset = Vector2(-141.93982, -16.22594)
 
 [sub_resource type="Animation" id="Animation_qi2p4"]
 resource_name = "Attack"
@@ -75,7 +75,7 @@ tracks/1/enabled = true
 tracks/1/path = NodePath("VisualPivot/Model")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.2, 1, 0, 0, -0.1, 0.4, 1, 0, 0, 0.25, 0.6333333, 1, 0, 0, 0)
+tracks/1/keys = PackedFloat32Array(1.4901161e-08, 1, 0, 0, 0, 0.20000002, 1, 0, 0, -0.1, 0.39999998, 1, 0, 0, 0.25, 0.6333333, 1, 0, 0, 0)
 
 [sub_resource type="Animation" id="Animation_7k104"]
 resource_name = "Hurt"
@@ -88,21 +88,40 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.13333334, 1, -0.13113286, 0, 0, 0.9913648, 0.2667, 1, 0, 0, 0, 1)
 
-[sub_resource type="Animation" id="Animation_4gyqm"]
-length = 0.001
+[sub_resource type="Animation" id="Animation_epg4t"]
+resource_name = "Idle"
+length = 0.5
+loop_mode = 1
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("VisualPivot")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.25, 1, 0.04857262, 0, 0, 0.99881965, 0.5, 1, 0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_4gyqm"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_iifgy"]
+resource_name = "Walk"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualPivot/Model")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(-2.6077032e-08, 1, 0, 0, 0, 0.24999997, 1, 0, 0.1721043, 0, 0.5, 1, 0, 0, 0)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4gyqm"]
 _data = {
 &"Attack": SubResource("Animation_qi2p4"),
 &"Hurt": SubResource("Animation_7k104"),
-&"RESET": SubResource("Animation_4gyqm")
+&"Idle": SubResource("Animation_epg4t"),
+&"RESET": SubResource("Animation_4gyqm"),
+&"Walk": SubResource("Animation_iifgy")
 }
 
 [node name="Enemy" type="CharacterBody3D" unique_id=1772175341]
@@ -148,6 +167,7 @@ wait_time = 2.0
 [node name="Health" parent="." unique_id=111858265 instance=ExtResource("2_4gyqm")]
 
 [connection signal="area_entered" from="VisualPivot/Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="animation_finished" from="AnimationTree" to="." method="on_attack_finished"]
 [connection signal="timeout" from="Timer" to="." method="_on_timeout"]
 [connection signal="death" from="Health" to="." method="death"]
 [connection signal="hurt" from="Health" to="." method="hurt"]

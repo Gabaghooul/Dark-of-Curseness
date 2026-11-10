@@ -9,14 +9,13 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 
 var connected_hits = []
 var state = "IDLE"
-var cooldown = false
 
-@onready var model := $VisualPivot as Node3D
+@onready var model := $VisualPivot/Model as Node3D
 @onready var timer: Timer = $Timer
 @onready var animation_tree = $AnimationTree
 @onready var playback = animation_tree.get("parameters/playback")
 var player = null
-var direction = null
+var direction = Vector3.ZERO
 
 func _ready():
 	player = get_tree().current_scene.get_node("Player")
@@ -40,27 +39,26 @@ func decide_action(distance_to_player):
 		"IDLE":
 			if distance_to_player > attack_range:
 				change_state("CHASE")
-			elif distance_to_player <= attack_range && !cooldown:
+			elif distance_to_player <= attack_range:
 				change_state("ATTACK")
 			pass
 		"CHASE":
-			if distance_to_player <= attack_range && !cooldown:
+			if distance_to_player <= attack_range:
 				change_state("ATTACK")
 			pass
 
 func change_state(new_state):
 	state = new_state
 	match state:
-		"IDLE":
+		"IDLE", "COOLDOWN":
 			playback.travel("Idle")
 			pass
 		"CHASE":
 			playback.travel("Walk")
 			pass
 		"ATTACK":
-			model.rotation.y = atan2(direction.x, direction.z)
+			connected_hits = []
 			playback.travel("Attack")
-			attack()
 			pass
 		"HURT":
 			pass
@@ -71,19 +69,18 @@ func execute_action(delta):
 			model.rotation.y = atan2(direction.x, direction.z)
 			velocity = direction * speed 
 		"ATTACK":
+			model.rotation.y = atan2(direction.x, direction.z)
 			velocity = Vector3.ZERO
 		"COOLDOWN":
 			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1 * delta)
 
 func _on_timeout() -> void:
-	cooldown = false
 	change_state("IDLE")
 
-func attack():
-	connected_hits = []
-	timer.start()
-	change_state("COOLDOWN")
-	cooldown = true
+func on_attack_finished(anim_name):
+	if anim_name == "Attack":
+		timer.start()
+		change_state("COOLDOWN")
 
 func enable_hitbox():
 	$VisualPivot/Hitbox.set_deferred("monitoring", true)
