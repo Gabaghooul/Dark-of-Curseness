@@ -1,5 +1,15 @@
 extends CharacterBody3D
 
+enum State {
+	READY,
+	ATTACK,
+	GUARD,
+	DODGE,
+	BLOCK,
+	HURT,
+	ATTACK_RECOVERY
+}
+
 const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 
 @export var max_hp = 100
@@ -14,7 +24,7 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 @onready var spring_arm := $CameraPivot/SpringArm3D as SpringArm3D
 
 var target_velocity = Vector3.ZERO
-var state = "READY"
+var state: State = State.READY
 var combo_buffered = false
 var dodge_ready = true
 
@@ -32,12 +42,12 @@ func _physics_process(delta):
 	get_dodge_input()
 
 func get_move_input(delta):
-	if state == "READY" || state == "GUARD":
+	if state == State.READY || state == State.GUARD:
 		var vy = velocity.y
 		velocity.y = 0
 		var input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		var dir = Vector3(input.x, 0, input.y).rotated(Vector3.UP, spring_arm.rotation.y)
-		if state == "GUARD":
+		if state == State.GUARD:
 			velocity = lerp(velocity, (dir * speed)/4, acceleration * delta)
 		else:
 			velocity = lerp(velocity, dir * speed, acceleration * delta)
@@ -49,28 +59,28 @@ func get_move_input(delta):
 
 func get_attack_input():
 	if Input.is_action_just_pressed("attack"):
-		if state == "READY":
-			state = "ATTACK"
+		if state == State.READY:
+			state = State.ATTACK
 			velocity = Vector3.ZERO
 			$VisualPivot/Pivot/WeaponSlot/Weapon.attack()
-		elif state == "ATTACK_RECOVERY":
-			state = "ATTACK"
+		elif state == State.ATTACK_RECOVERY:
+			state = State.ATTACK
 			velocity = Vector3.ZERO
 			$VisualPivot/Pivot/WeaponSlot/Weapon.attack()
-		elif state == "ATTACK":
+		elif state == State.ATTACK:
 			combo_buffered = true
 
 func get_guard_input():
-	if state == "READY" || state == "ATTACK_RECOVERY":
+	if state == State.READY || state == State.ATTACK_RECOVERY:
 		if Input.is_action_pressed("guard"):
-			state = "GUARD"
+			state = State.GUARD
 	if Input.is_action_just_released("guard"):
 		reset_state()
 
 func get_dodge_input():
 	#deactivate hitbox during dodge
-	if state == "GUARD" && Input.is_action_just_pressed("jump"):
-		state = "DODGE"
+	if state == State.GUARD && Input.is_action_just_pressed("jump"):
+		state = State.DODGE
 		$AnimationPlayer.play("Dodge")
 
 func dodge(delta):
@@ -84,20 +94,20 @@ func dodge(delta):
 			model.rotation.y = lerp_angle(model.rotation.y, target_angle + 180, rotation_speed * delta)
 
 func enter_attack_recovery():
-	state = "ATTACK_RECOVERY"
+	state = State.ATTACK_RECOVERY
 	if combo_buffered:
-		state = "ATTACK"
+		state = State.ATTACK
 		velocity = Vector3.ZERO
 		$VisualPivot/Pivot/WeaponSlot/Weapon.attack()
 		combo_buffered = false
 
 func enter_dodge_recovery():
-	state = "READY"
+	state = State.READY
 	dodge_ready = false
 	$Hurtbox.set_deferred("monitorable", true)
 
 func reset_state():
-	state = "READY"
+	state = State.READY
 	dodge_ready = true
 	combo_buffered = false
 
@@ -108,12 +118,12 @@ func _unhandled_input(event):
 		spring_arm.rotation.y -= event.relative.x * mouse_sensitivity
 
 func hurt():
-	state = "HURT"
+	state = State.HURT
 	$AnimationPlayer.play("Hurt")
 	$VisualPivot/Pivot/WeaponSlot/Weapon.interrupted()
 
 func block():
-	state = "BLOCK"
+	state = State.BLOCK
 	$AnimationPlayer.play("Hurt")
 
 func _on_damage_taken(amount: int):

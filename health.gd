@@ -12,13 +12,14 @@ func init(parent_hp):
 	hp = parent_hp
 
 func take_damage(damage):
-	if get_parent().state != "GUARD" && get_parent().state != "DODGE":
-		if hp > 0:
-			hp -= damage
-			damage_taken.emit(damage)
-			if hp <= 0:
-				emit_signal("death")
-			emit_signal("hurt")
-	else:
-		if get_parent().state == "GUARD":
-			emit_signal("block")
+	#if get_parent().state != "GUARD" && get_parent().state != "DODGE":
+	if hp > 0:
+		hp -= damage
+		damage_taken.emit(damage)
+		if hp <= 0:
+			emit_signal("death")
+			return
+		emit_signal("hurt")
+	#else:
+		#if get_parent().state == "GUARD":
+			#emit_signal("block")

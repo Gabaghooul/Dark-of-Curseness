@@ -1,5 +1,13 @@
 extends CharacterBody3D
 
+enum State {
+	IDLE,
+	CHASE,
+	ATTACK,
+	COOLDOWN,
+	HURT
+}
+
 const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 
 @export var max_hp = 250
@@ -8,105 +16,133 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 @export var attack_range = 1.3
 @export var rotation_speed = 20
 
-var connected_hits = []
-var state = "IDLE"
+var connected_hits: Array[Node] = []
+var state: State = State.IDLE
+var player: Node3D
+var direction: Vector3 = Vector3.ZERO
 
-@onready var model := $VisualPivot as Node3D
-@onready var timer: Timer = $Timer
-@onready var animation_tree = $AnimationTree
+@onready var facing_pivot: Node3D = $VisualPivot
+@onready var hitbox: Area3D = $VisualPivot/Hitbox
+@onready var health = $Health
+@onready var cooldown_timer: Timer = $Timer
+@onready var animation_tree: AnimationTree = $AnimationTree
 @onready var playback = animation_tree.get("parameters/playback")
-var player = null
-var direction = Vector3.ZERO
 
 func _ready():
-	player = get_tree().current_scene.get_node("Player")
-	$Health.init(max_hp)
-	$Health.damage_taken.connect(_on_damage_taken)
+	player = get_tree().current_scene.get_node_or_null("Player")
+	
+	health.init(max_hp)
+	health.damage_taken.connect(_on_damage_taken)
+	cooldown_timer.one_shot = true
 	
 func _physics_process(delta):
-	if not player:
+	if not is_instance_valid(player):
 		return
 	
-	var distance_to_player = global_position.distance_to(player.global_position)
-	direction = (player.global_position - global_position)
-	direction.y = 0
-	direction = direction.normalized()
-	decide_action(distance_to_player)
-	execute_action(delta)
+	var to_player := player.global_position - global_position
+	to_player.y = 0.0
+	var distance := to_player.length()
+	direction = to_player.normalized() if distance > 0.001 else Vector3.ZERO
+	
+	_update_state(distance)
+	_update_movement(delta)
+	
 	move_and_slide()
 
-func decide_action(distance_to_player):
+func _update_state(distance):
 	match state:
-		"IDLE":
-			if distance_to_player > attack_range:
-				change_state("CHASE")
-			elif distance_to_player <= attack_range:
-				change_state("ATTACK")
-			pass
-		"CHASE":
-			if distance_to_player <= attack_range:
-				change_state("ATTACK")
-			pass
+		State.IDLE:
+			if distance > attack_range:
+				change_state(State.CHASE)
+			else:
+				change_state(State.ATTACK)
 
-func change_state(new_state):
+		State.CHASE:
+			if distance <= attack_range:
+				change_state(State.ATTACK)
+
+
+func change_state(new_state: State):
+	if state == new_state:
+		return
+
+	if state == State.ATTACK:
+		disable_hitbox()
+
+	if new_state == State.HURT:
+		cooldown_timer.stop()
+
 	state = new_state
+
 	match state:
-		"IDLE", "COOLDOWN":
+		State.IDLE:
 			playback.travel("Idle")
-			pass
-		"CHASE":
+		State.CHASE:
 			playback.travel("Walk")
-			pass
-		"ATTACK":
-			connected_hits = []
+		State.ATTACK:
+			connected_hits.clear()
 			playback.travel("Attack")
-			pass
-		"HURT":
+		State.COOLDOWN:
+			cooldown_timer.start()
+			playback.travel("Idle")
+		State.HURT:
 			disable_hitbox()
 			playback.travel("Hurt")
-			pass
 
-func execute_action(delta):
+func _update_movement(delta):
 	match state:
-		"CHASE":
-			var target_angle = atan2(direction.x, direction.z)
-			model.rotation.y = lerp_angle(model.rotation.y, target_angle, rotation_speed * delta)
-			velocity = direction * speed
-			pass
-		"ATTACK":
-			var target_angle = atan2(direction.x, direction.z)
-			model.rotation.y = lerp_angle(model.rotation.y, target_angle, rotation_speed * delta)
-			velocity = Vector3.ZERO
-			pass
-		"COOLDOWN":
-			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1 * delta)
-			pass
-		"HURT":
-			velocity = Vector3.ZERO
-			pass
+		State.CHASE:
+			_face_player(delta)
+			velocity.x = direction.x * speed
+			velocity.z = direction.z * speed
+		State.ATTACK:
+			_face_player(delta)
+			velocity.x = 0.0
+			velocity.z = 0.0
+		_:
+			velocity.x = 0.0
+			velocity.z = 0.0
+
+func _face_player(delta):
+	if direction.length_squared() < 0.001:
+		return
+	
+	var target_angle := atan2(direction.x, direction.z)
+	var weight := minf(rotation_speed * delta, 1.0)
+	facing_pivot.rotation.y = lerp_angle(facing_pivot.rotation.y, target_angle, weight)
 
 func _on_timeout() -> void:
-	change_state("IDLE")
+	if state == State.COOLDOWN:
+		change_state(State.IDLE)
 
-func on_attack_finished(anim_name):
-	if anim_name == "Attack":
-		timer.start()
-		change_state("COOLDOWN")
+func _on_animation_finished(anim_name):
+	if state == State.ATTACK && anim_name == "Attack":
+		change_state(State.COOLDOWN)
+	elif state == State.HURT && anim_name == "Hurt":
+		cooldown_timer.start()
+		change_state(State.COOLDOWN)
 
 func enable_hitbox():
-	$VisualPivot/Hitbox.set_deferred("monitoring", true)
+	if state == State.ATTACK:
+		hitbox.set_deferred("monitoring", true)
 	
 func disable_hitbox():
-	$VisualPivot/Hitbox.set_deferred("monitoring", false)
+	hitbox.set_deferred("monitoring", false)
 	
 func _on_hitbox_area_entered(area: Area3D) -> void:
+	if state != State.ATTACK:
+		return
+
 	var target = area.get_parent()
+	if target == null:
+		return
+
 	if target.has_node("Health") && !connected_hits.has(target):
 		target.get_node("Health").take_damage(damage)
 		connected_hits.append(target)
 
 func hurt():
-	change_state("HURT")
+	change_state(State.HURT)
 
 func _on_damage_taken(amount: int):
 	var number = DAMAGE_NUMBER.instantiate()
@@ -115,5 +151,7 @@ func _on_damage_taken(amount: int):
 	number.show_damage(amount)
 
 func death():
+	cooldown_timer.stop()
+	disable_hitbox()
 	#give xp/roll for drops/etc
 	queue_free()
