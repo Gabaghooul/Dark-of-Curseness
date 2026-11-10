@@ -6,11 +6,12 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 @export var damage = 10
 @export var speed = 4
 @export var attack_range = 1.3
+@export var rotation_speed = 20
 
 var connected_hits = []
 var state = "IDLE"
 
-@onready var model := $VisualPivot/Model as Node3D
+@onready var model := $VisualPivot as Node3D
 @onready var timer: Timer = $Timer
 @onready var animation_tree = $AnimationTree
 @onready var playback = animation_tree.get("parameters/playback")
@@ -61,18 +62,28 @@ func change_state(new_state):
 			playback.travel("Attack")
 			pass
 		"HURT":
+			disable_hitbox()
+			playback.travel("Hurt")
 			pass
 
 func execute_action(delta):
 	match state:
 		"CHASE":
-			model.rotation.y = atan2(direction.x, direction.z)
-			velocity = direction * speed 
+			var target_angle = atan2(direction.x, direction.z)
+			model.rotation.y = lerp_angle(model.rotation.y, target_angle, rotation_speed * delta)
+			velocity = direction * speed
+			pass
 		"ATTACK":
-			model.rotation.y = atan2(direction.x, direction.z)
+			var target_angle = atan2(direction.x, direction.z)
+			model.rotation.y = lerp_angle(model.rotation.y, target_angle, rotation_speed * delta)
 			velocity = Vector3.ZERO
+			pass
 		"COOLDOWN":
 			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1 * delta)
+			pass
+		"HURT":
+			velocity = Vector3.ZERO
+			pass
 
 func _on_timeout() -> void:
 	change_state("IDLE")
@@ -95,9 +106,8 @@ func _on_hitbox_area_entered(area: Area3D) -> void:
 		connected_hits.append(target)
 
 func hurt():
-	disable_hitbox()
-	timer.start()
-	
+	change_state("HURT")
+
 func _on_damage_taken(amount: int):
 	var number = DAMAGE_NUMBER.instantiate()
 	get_tree().current_scene.add_child(number)

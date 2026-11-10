@@ -19,6 +19,9 @@ radius = 0.20844007
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4gyqm"]
 animation = &"Attack"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_epg4t"]
+animation = &"Hurt"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iifgy"]
 animation = &"Idle"
 
@@ -37,16 +40,26 @@ animation = &"Walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4gyqm"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_e1ltt"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dxifv"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pwjut"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_n0g06"]
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_2iv3x"]
 states/Attack/node = SubResource("AnimationNodeAnimation_4gyqm")
 states/Attack/position = Vector2(550, 100)
 states/End/position = Vector2(659, 100)
+states/Hurt/node = SubResource("AnimationNodeAnimation_epg4t")
+states/Hurt/position = Vector2(407.06018, 188.77406)
 states/Idle/node = SubResource("AnimationNodeAnimation_iifgy")
 states/Idle/position = Vector2(281.06018, 100)
 states/Start/position = Vector2(180, 100)
 states/Walk/node = SubResource("AnimationNodeAnimation_qi2p4")
 states/Walk/position = Vector2(407.06018, 35)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_epg4t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_iifgy"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_3yqyl"), "Walk", "Attack", SubResource("AnimationNodeStateMachineTransition_wujgv"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_hb8ge"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_4gyqm")]
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_epg4t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_iifgy"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_3yqyl"), "Walk", "Attack", SubResource("AnimationNodeStateMachineTransition_wujgv"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_hb8ge"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_4gyqm"), "Idle", "Hurt", SubResource("AnimationNodeStateMachineTransition_e1ltt"), "Walk", "Hurt", SubResource("AnimationNodeStateMachineTransition_dxifv"), "Attack", "Hurt", SubResource("AnimationNodeStateMachineTransition_pwjut"), "Hurt", "Idle", SubResource("AnimationNodeStateMachineTransition_n0g06")]
 graph_offset = Vector2(-141.93982, -16.22594)
 
 [sub_resource type="Animation" id="Animation_qi2p4"]
@@ -83,10 +96,24 @@ length = 0.2667
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("VisualPivot")
+tracks/0/path = NodePath("VisualPivot/Model")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.13333334, 1, -0.13113286, 0, 0, 0.9913648, 0.2667, 1, 0, 0, 0, 1)
+tracks/0/keys = PackedFloat32Array(-3.331527e-05, 1, 0, 0, 0, 1, 0.13330002, 1, -0.13113286, 0, 0, 0.9913648, 0.26666668, 1, 0, 0, 0, 1)
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.23333333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["COOLDOWN"],
+"method": &"change_state"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_epg4t"]
 resource_name = "Idle"
@@ -95,10 +122,10 @@ loop_mode = 1
 tracks/0/type = "rotation_3d"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("VisualPivot")
+tracks/0/path = NodePath("VisualPivot/Model")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.25, 1, 0.04857262, 0, 0, 0.99881965, 0.5, 1, 0, 0, 0, 1)
+tracks/0/keys = PackedFloat32Array(2.9802322e-08, 1, 0, 0, 0, 1, 0.25, 1, 0.04857262, 0, 0, 0.99881965, 0.5, 1, 0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_4gyqm"]
 length = 0.001
@@ -141,6 +168,7 @@ shape = SubResource("CapsuleShape3D_lhlqy")
 debug_color = Color(0.9408043, 1.0396242e-05, 0.6155819, 0.41960785)
 
 [node name="Model" type="MeshInstance3D" parent="VisualPivot" unique_id=1663258575]
+transform = Transform3D(1, 0, 0, 0, 1, 6.572019e-05, 0, -6.572019e-05, 1, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_2iv3x")
 surface_material_override/0 = SubResource("StandardMaterial3D_lhlqy")
 
