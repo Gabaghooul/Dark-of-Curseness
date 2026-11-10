@@ -16,6 +16,7 @@ var cooldown = false
 @onready var animation_tree = $AnimationTree
 @onready var playback = animation_tree.get("parameters/playback")
 var player = null
+var direction = null
 
 func _ready():
 	player = get_tree().current_scene.get_node("Player")
@@ -27,27 +28,27 @@ func _physics_process(delta):
 		return
 	
 	var distance_to_player = global_position.distance_to(player.global_position)
-	var direction = (player.global_position - global_position)
+	direction = (player.global_position - global_position)
 	direction.y = 0
 	direction = direction.normalized()
-	decide_action(distance_to_player, direction)
-	execute_action(delta, direction)
+	decide_action(distance_to_player)
+	execute_action(delta)
 	move_and_slide()
 
-func decide_action(distance_to_player, direction):
+func decide_action(distance_to_player):
 	match state:
 		"IDLE":
 			if distance_to_player > attack_range:
-				change_state("CHASE", direction)
+				change_state("CHASE")
 			elif distance_to_player <= attack_range && !cooldown:
-				change_state("ATTACK", direction)
+				change_state("ATTACK")
 			pass
 		"CHASE":
 			if distance_to_player <= attack_range && !cooldown:
-				change_state("ATTACK", direction)
+				change_state("ATTACK")
 			pass
 
-func change_state(new_state, direction):
+func change_state(new_state):
 	state = new_state
 	match state:
 		"IDLE":
@@ -59,28 +60,29 @@ func change_state(new_state, direction):
 		"ATTACK":
 			model.rotation.y = atan2(direction.x, direction.z)
 			playback.travel("Attack")
+			attack()
 			pass
 		"HURT":
 			pass
 
-func execute_action(delta, direction):
+func execute_action(delta):
 	match state:
 		"CHASE":
 			model.rotation.y = atan2(direction.x, direction.z)
 			velocity = direction * speed 
 		"ATTACK":
-			print("stopped to attack")
 			velocity = Vector3.ZERO
-			attack()
 		"COOLDOWN":
 			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1 * delta)
 
 func _on_timeout() -> void:
 	cooldown = false
+	change_state("IDLE")
 
 func attack():
 	connected_hits = []
 	timer.start()
+	change_state("COOLDOWN")
 	cooldown = true
 
 func enable_hitbox():
