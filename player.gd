@@ -6,7 +6,7 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 @export var speed = 10
 @export var acceleration = 10.0
 @export var fall_acceleration = 75
-@export var rotation_speed = 12
+@export var rotation_speed = 20
 @export_range(0.0, 1.0) var mouse_sensitivity = 0.01
 @export var tilt_limit = deg_to_rad(75)
 
@@ -77,7 +77,7 @@ func dodge(delta):
 	$Hurtbox.set_deferred("monitorable", false)
 	var input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var dir = Vector3(input.x, 0, input.y).rotated(Vector3.UP, spring_arm.rotation.y)
-	velocity = lerp(velocity, (dir * speed)*4, acceleration * delta * 4)
+	velocity = lerp(velocity, (dir * speed)*3, acceleration * delta * 4)
 	if velocity.length() > 1.0:
 		if dir.length() > 0.0:
 			var target_angle = atan2(dir.x, dir.z)

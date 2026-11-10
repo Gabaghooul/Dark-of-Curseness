@@ -15,6 +15,40 @@ albedo_color = Color(0.09019608, 0.1764706, 1, 1)
 [sub_resource type="SphereShape3D" id="SphereShape3D_2iv3x"]
 radius = 0.20844007
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4gyqm"]
+animation = &"Attack"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iifgy"]
+animation = &"RESET"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qi2p4"]
+animation = &"RESET"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_epg4t"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_iifgy"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3yqyl"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wujgv"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hb8ge"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4gyqm"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_2iv3x"]
+states/Attack/node = SubResource("AnimationNodeAnimation_4gyqm")
+states/Attack/position = Vector2(550, 100)
+states/End/position = Vector2(659, 100)
+states/Idle/node = SubResource("AnimationNodeAnimation_iifgy")
+states/Idle/position = Vector2(280.06018, 100)
+states/Start/position = Vector2(180, 100)
+states/Walk/node = SubResource("AnimationNodeAnimation_qi2p4")
+states/Walk/position = Vector2(407.06018, 36)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_epg4t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_iifgy"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_3yqyl"), "Walk", "Attack", SubResource("AnimationNodeStateMachineTransition_wujgv"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_hb8ge"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_4gyqm")]
+graph_offset = Vector2(-143.93982, -39.22594)
+
 [sub_resource type="Animation" id="Animation_qi2p4"]
 resource_name = "Attack"
 length = 0.7
@@ -35,6 +69,13 @@ tracks/0/keys = {
 "method": &"disable_hitbox"
 }]
 }
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VisualPivot/Model")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.2, 1, 0, 0, -0.1, 0.4, 1, 0, 0, 0.25, 0.6333333, 1, 0, 0, 0)
 
 [sub_resource type="Animation" id="Animation_7k104"]
 resource_name = "Hurt"
@@ -94,12 +135,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54430795, 0.73633444)
 shape = SubResource("SphereShape3D_2iv3x")
 debug_color = Color(0.62458503, 0, 0.03876, 0.92200005)
 
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=91359572]
+tree_root = SubResource("AnimationNodeStateMachine_2iv3x")
+anim_player = NodePath("../AnimationPlayer")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1172209111]
 libraries/ = SubResource("AnimationLibrary_4gyqm")
 
 [node name="Timer" type="Timer" parent="." unique_id=103930429]
 wait_time = 2.0
-autostart = true
 
 [node name="Health" parent="." unique_id=111858265 instance=ExtResource("2_4gyqm")]
 

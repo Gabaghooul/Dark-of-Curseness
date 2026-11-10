@@ -8,10 +8,13 @@ const DAMAGE_NUMBER = preload("res://ui/damage_numbers.tscn")
 @export var attack_range = 1.3
 
 var connected_hits = []
-var state = "CHASE"
+var state = "IDLE"
+var cooldown = false
 
 @onready var model := $VisualPivot as Node3D
 @onready var timer: Timer = $Timer
+@onready var animation_tree = $AnimationTree
+@onready var playback = animation_tree.get("parameters/playback")
 var player = null
 
 func _ready():
@@ -24,42 +27,62 @@ func _physics_process(delta):
 		return
 	
 	var distance_to_player = global_position.distance_to(player.global_position)
-	decide_action(distance_to_player)
-	execute_action()
+	var direction = (player.global_position - global_position)
+	direction.y = 0
+	direction = direction.normalized()
+	decide_action(distance_to_player, direction)
+	execute_action(delta, direction)
 	move_and_slide()
 
-func decide_action(distance_to_player):
+func decide_action(distance_to_player, direction):
 	match state:
-		"CHASE":
-			if distance_to_player <= attack_range:
-				state = "ATTACK"
-		"ATTACK":
+		"IDLE":
+			if distance_to_player > attack_range:
+				change_state("CHASE", direction)
+			elif distance_to_player <= attack_range && !cooldown:
+				change_state("ATTACK", direction)
 			pass
-		"COOLDOWN":
+		"CHASE":
+			if distance_to_player <= attack_range && !cooldown:
+				change_state("ATTACK", direction)
 			pass
 
-func execute_action():
+func change_state(new_state, direction):
+	state = new_state
+	match state:
+		"IDLE":
+			playback.travel("Idle")
+			pass
+		"CHASE":
+			playback.travel("Walk")
+			pass
+		"ATTACK":
+			model.rotation.y = atan2(direction.x, direction.z)
+			playback.travel("Attack")
+			pass
+		"HURT":
+			pass
+
+func execute_action(delta, direction):
 	match state:
 		"CHASE":
-			var direction = (player.global_position - global_position).normalized()
-			model.rotation.y = direction.y
-			velocity = direction * speed
+			model.rotation.y = atan2(direction.x, direction.z)
+			velocity = direction * speed 
 		"ATTACK":
-			var direction = (player.global_position - global_position).normalized()
-			model.rotation.y = direction.y
+			print("stopped to attack")
 			velocity = Vector3.ZERO
 			attack()
 		"COOLDOWN":
-			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1)
+			velocity = velocity.move_toward(Vector3.ZERO, speed * 0.1 * delta)
 
 func _on_timeout() -> void:
-	state = "CHASE"
+	cooldown = false
 
 func attack():
 	connected_hits = []
-	$AnimationPlayer.play("Attack")
-	state = "COOLDOWN"
-	
+	timer.start()
+	cooldown = true
+
 func enable_hitbox():
 	$VisualPivot/Hitbox.set_deferred("monitoring", true)
 	
@@ -73,8 +96,8 @@ func _on_hitbox_area_entered(area: Area3D) -> void:
 		connected_hits.append(target)
 
 func hurt():
+	disable_hitbox()
 	timer.start()
-	$AnimationPlayer.play("Hurt")
 	
 func _on_damage_taken(amount: int):
 	var number = DAMAGE_NUMBER.instantiate()
